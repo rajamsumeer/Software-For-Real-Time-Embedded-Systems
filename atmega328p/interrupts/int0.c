@@ -22,8 +22,8 @@ uint16_t ISRCOUNT;
 // Triggered whenever INT0 detects edge
 ISR(INT0_vect) 
 {
-  ISRCOUNT++;          // Increment count each time the interrupt triggers
-  PORTB ^= (1<<5);     // Toggle LED on PB5
+  ISRCOUNT++; // Increment count each time the interrupt triggers
+  PORTB ^= (1<<5); // Toggle LED on PB5
 }
 
 int main(void) 
@@ -36,10 +36,11 @@ int main(void)
   usartInit(); // Initialize serial communication
 
   // Interrupts
-  EICRA |= (1<<ISC01) ; // IRQ
+  EICRA |= (1<<ISC01); // IRQ
   EIMSK |= (1<<INT0);  // Enable interrupt INT0
   sei(); // Enable global interrupts
 
+  // Buffer, Count & Frequency variables
   char str[10];
   uint8_t loopCount = 0;
   uint16_t oldCount = ISRCOUNT;
@@ -51,6 +52,7 @@ int main(void)
     if (loopCount == 4) {
       loopCount = 0;
 
+      // Calculcate frequency
       frequency = ISRCOUNT - oldCount;
 
       sprintf(str, "Frequency: %u\n", frequency);
