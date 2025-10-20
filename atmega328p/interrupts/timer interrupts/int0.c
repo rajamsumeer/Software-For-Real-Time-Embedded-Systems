@@ -7,8 +7,10 @@ Module: Software for Real-Time and Embedded Systems @ Year 3, Semester 1 (Techno
 Configuring and counting EXTERNAL interrupts on PD2 and sending information over USART.
 Frequency estimation between interrupt counts.
 
-## Last modified:
+## Last modified: 20/10/2025
 */
+
+//-----------LIBRARIES------------//
 #include <avr/io.h>
 #include "usart.h" // USART header for serial communication
 #include "stdio.h" // for sprintf()
@@ -16,36 +18,43 @@ Frequency estimation between interrupt counts.
 #include <util/delay.h> // delay functions (_delay_ms)
 #include <avr/interrupt.h> // for handling interrupts
 
-// Count how many times the interrupt occurs
-uint16_t ISRCOUNT;
+//-----------GLOBAL VARIABLES------------//
+uint16_t ISRCOUNT; // Count how many times the interrupt occurs
 
-// Triggered whenever INT0 detects edge
+/*-----------INTERRUPT SERVICE ROUTINE------------
+             INT0 INTERRIPT
+Triggers whenever a RISING edge is detected on INT0
+*/
 ISR(INT0_vect) 
 {
   ISRCOUNT++; // Increment count each time the interrupt triggers
-  PORTB ^= (1<<5); // Toggle LED on PB5
+  PORTB ^= (1<<5); // Toggle LED on PB5 for visual debugging
 }
 
+//-----------MAIN PROGRAM------------//
 int main(void) 
 {
-  // I/O
+//-----------REGISTER CONFIGURATIONS------------//
   DDRB |= (1<<5); // Set PB5 as output (LED)
   DDRD &= ~(1<<2); // Set PD2 as input
-  PORTD |= (1<<2); // Enable internal pull-up resistor on PD2
+  PORTD &= ~(1<<2); // No internal pull-up resistor on PD2
 
   usartInit(); // Initialize serial communication
 
-  // Interrupts
-  EICRA |= (1<<ISC01); // IRQ
-  EIMSK |= (1<<INT0);  // Enable interrupt INT0
+  EICRA |= (1<<ISC01); // INT0 triggers on RISING edge
+  EIMSK |= (1<<INT0);  // Enable INT0 interrupt
+
   sei(); // Enable global interrupts
 
-  // Buffer, Count & Frequency variables
+//-----------LOCAL VARIABLES------------//
   char str[10];
   uint8_t loopCount = 0;
-  uint16_t oldCount = ISRCOUNT;
+  uint16_t oldCount = ISRCOUNT; // previous count
   uint16_t frequency;
 
+/*-----------INFINITE LOOP------------
+COUNTS INTERRUPTS OCCURED EACH SECOND
+*/
   while(1) 
   { 
     loopCount++;
@@ -62,18 +71,11 @@ int main(void)
       oldCount = ISRCOUNT;
     }
 
-    // Check PIN state
-    if (PINB & (1<<5)) {
-      usartSendString("PIN HIGH\n"); // LED ON
-    } else {
-      usartSendString("PIN LOW\n"); // LED OFF
-    }
-
     sprintf(str, "Count: %u\n", ISRCOUNT);
     usartSendString(str);
 
     _delay_ms(250);
   } 
 
-  return 0; 
+  return 0; // never reaches heres
 }
