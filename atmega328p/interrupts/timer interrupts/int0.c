@@ -76,6 +76,5 @@ COUNTS INTERRUPTS OCCURED EACH SECOND
 
     _delay_ms(250);
   } 
-
   return 0; // never reaches heres
 }

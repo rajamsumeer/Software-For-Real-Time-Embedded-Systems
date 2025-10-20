@@ -32,7 +32,8 @@ ISR(TIMER1_COMPA_vect)
 }
 
 //-----------MAIN PROGRAM------------//
-int main(void) {
+int main(void) 
+{
 //-----------REGISTER CONFIGURATIONS------------//
 DDRB |= (1 << 5); // Set LED as output
 usartInit(); // initialize USART
@@ -56,7 +57,7 @@ while(1) {
     sprintf(countStr,"%u\n",count-oldCount); // diff
     usartSendString(countStr);
     oldCount = count; // update old count
-}
+
   _delay_ms(250);
  }
  return 0; // never reaches here
