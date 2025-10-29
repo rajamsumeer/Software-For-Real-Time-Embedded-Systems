@@ -16,7 +16,7 @@ and display count over USART serial communication.
 #include "usart.h" // USART serial communication
 #include <stdio.h> // for sprintf()
 #define F_CPU 1000000UL // define clock speed @1MHz
-#include <util/delay.h> 
+#include <util/delay.h> // for _delay_ms()
 
 //-----------GLOBAL VARIABLES------------//
 uint16_t count; // count timer interrupts

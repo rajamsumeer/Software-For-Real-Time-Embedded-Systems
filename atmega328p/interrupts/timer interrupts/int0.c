@@ -15,7 +15,7 @@ Frequency estimation between interrupt counts.
 #include "usart.h" // USART header for serial communication
 #include "stdio.h" // for sprintf()
 #define F_CPU 1000000UL // define CPU clock speed (1 MHz)
-#include <util/delay.h> // delay functions (_delay_ms)
+#include <util/delay.h> // for _delay_ms()
 #include <avr/interrupt.h> // for handling interrupts
 
 //-----------GLOBAL VARIABLES------------//
